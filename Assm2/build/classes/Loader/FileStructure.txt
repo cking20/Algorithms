@@ -1,0 +1,80 @@
+    lenght of record/number of values           int
+    StateData ID                                int
+    timeDownloaded                              long
+    URL                                         char[150]
+    dataDateFrom                                char[10]
+    dataDateTo                                  char[10]
+        
+        value                                   int
+        key                                     int
+        date                                    char[10]
+        datatype                                char[10]
+        station                                 char[20]
+        atributes                               char[10]
+        
+        value
+        key
+        date
+        datatype
+        station
+        atributes
+        value
+        
+        key
+        date
+        datatype
+        station
+        atributes
+OpenRAFWrite();
+long endOF = RAFchan.size();//in bytes
+int hashNum = hM.getCount();
+System.out.println("Hash count: " + hashNum);
+int totalSizeReq = metaSize + readingSize * hashNum;
+ByteBuffer bb = ByteBuffer.allocate(totalSizeReq);
+//META
+bb.putInt(hM.getCount());//was totalSizeReq);
+bb.putInt(hM.StateID);
+bb.putLong(hM.getTimeDownloaded());
+//byte[] urlBArry = hM.getURL().getBytes();
+bb.put(getByteArrayFromString(hM.getURL(), URL_CHAR_NUM));
+//byte[] fromDateArray = hM.FromDate.getBytes();
+bb.put(getByteArrayFromString(hM.FromDate, DATE_CHAR_NUM));
+//byte[] toDateArray = hM.ToDate.getBytes();
+bb.put(getByteArrayFromString(hM.ToDate, DATE_CHAR_NUM));
+//END OF META
+bb.rewind();
+RAFchan.write(bb);
+
+
+
+
+
+
+v = new Value();
+    v.setLocationVal(locationIden);
+    v.setDate(element.getString("date"));
+    v.setDatatype(element.getString("datatype"));
+    v.setStation(element.getString("station"));
+    v.setAttributes(element.getString("attributes"));
+    v.setValue(element.getInt("value"));
+    v.calcKey();
+    //only add specidied values to the maps
+    if(v.getAttributes().compareTo(",,N,") == 0 && v.getDatatype().compareTo(typeOfVal) == 0){
+        System.out.print(i + " ");
+        System.out.print(v.getDatatype());
+        //System.out.print(v.getAttributes());
+        System.out.println("           " + v.getValue());
+        map.add(v);
+    }
+info.setText("Collecting...");
+        theMap = new HashMap();
+        long startTime = System.currentTimeMillis();
+        locationVal = parseState(baseInput.getText());
+        generateURL();
+        theMap = getHashMapData(finalURL, locationVal);
+        log.setText(theMap.PrintMap());
+        System.out.println(theMap.PrintMap());
+        long endTime   = System.currentTimeMillis();
+        long totalTime = endTime - startTime;
+        System.out.println(totalTime);
+        info.setText("Collected Data.");
